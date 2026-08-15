@@ -1,56 +1,86 @@
-# Welcome to your Expo app 👋
+# Vigil Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Vigil Tracker is a retro-styled, interactive neighborhood sighting map built
+with Expo and React Native. It demonstrates animated map markers, pan and pinch
+gestures, profile-based filtering, short audio announcements, modal panels, and
+native sharing in a single cross-platform codebase.
 
-## Get started
+> This is a fictional, fan-made interface. It does not track real people or
+> locations and is not affiliated with or endorsed by Marvel or Sony.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- Animated live sighting route with local audio announcements
+- Pan, pinch-to-zoom, recenter, terrain, and 2D/3D map controls
+- Confirmed and rumored sighting filters
+- Activity archive, chat preview, and native share sheet
+- Android, iOS, and web support through Expo Router
+- Strict TypeScript and Expo ESLint checks
 
-2. Start the app
+## Tech stack
 
-   ```bash
-   npx expo start
-   ```
+- Expo SDK 57
+- React 19 and React Native 0.86
+- Expo Router
+- React Native Reanimated and Gesture Handler
+- React Native SVG
 
-In the output, you'll find options to open the app in a
+## Requirements
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js 22.13 or newer
+- npm
+- Expo Go or a platform simulator/emulator for native development
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Expo SDK 57 targets React Native 0.86 and requires Node.js 22.13 or newer. See
+the [versioned Expo SDK 57 documentation](https://docs.expo.dev/versions/v57.0.0/)
+for platform requirements.
 
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+git clone <your-repository-url>
+cd spiderman-tracker
+npm install
+npm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+From the Expo CLI, open the project on Android, iOS, or web. You can also start
+a platform directly:
 
-### Other setup steps
+```bash
+npm run android
+npm run ios
+npm run web
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Quality checks
 
-## Learn more
+Run all static checks before opening a pull request:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm run check
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+The same checks run automatically in GitHub Actions.
 
-## Join the community
+## Project structure
 
-Join our community of developers creating universal apps.
+```text
+src/
+├── app/          # Expo Router screens and root layout
+├── components/   # Tracker UI and map presentation
+├── constants/    # Shared visual tokens
+├── data/         # Typed demo data and asset mappings
+└── hooks/        # Live route and audio behavior
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+All sightings and chat entries are static demo data in
+`src/data/sightings.ts`. No backend, analytics service, API key, or user data is
+used by the application.
+
+## License
+
+The source code is available under the [MIT License](LICENSE). Product names,
+characters, and third-party trademarks remain the property of their respective
+owners. Verify that you have distribution rights for any media assets you add
+to a fork.

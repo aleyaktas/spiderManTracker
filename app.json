@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "spiderman-tracker",
-    "slug": "spiderman-tracker",
+    "name": "Vigil Tracker",
+    "slug": "vigil-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "spidermantracker",
-    "userInterfaceStyle": "automatic",
+    "scheme": "vigiltracker",
+    "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -28,11 +28,12 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#010408",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,

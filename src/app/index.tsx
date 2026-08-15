@@ -1,98 +1,94 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
+import { Share, StyleSheet, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { TrackerDevice } from '@/components/tracker-device';
+import { ArchiveModal, ChatModal } from '@/components/tracker-modals';
+import { colors } from '@/constants/tracker-theme';
+import {
+  getSightingById,
+  getSightingsForProfile,
+  latestSighting,
+  type ProfileId,
+  type Sighting,
+} from '@/data/sightings';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+type ActiveModal = 'archive' | 'chat' | null;
+
+function titleCase(value: string) {
+  return value.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function createShareMessage(sighting: Sighting) {
+  const type = sighting.type === 'confirmed' ? 'Confirmed' : 'Rumored';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    `${type} tracker sighting detected in ${titleCase(sighting.area)} — ` +
+    `${sighting.timestamp.toLowerCase()}.`
   );
 }
 
-export default function HomeScreen() {
+export default function TrackerScreen() {
+  const [profile, setProfile] = useState<ProfileId>(3);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [terrain, setTerrain] = useState(false);
+  const [is3D, setIs3D] = useState(false);
+  const [centerRequest, setCenterRequest] = useState(0);
+  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+
+  const visibleSightings = getSightingsForProfile(profile);
+  const selectedSighting = getSightingById(selectedId);
+
+  const changeProfile = (nextProfile: ProfileId) => {
+    const nextSightings = getSightingsForProfile(nextProfile);
+
+    setProfile(nextProfile);
+    setSelectedId((current) =>
+      current && nextSightings.some((sighting) => sighting.id === current)
+        ? current
+        : null,
+    );
+  };
+
+  const shareSighting = async () => {
+    const target = selectedSighting ?? latestSighting;
+
+    await Share.share({ message: createShareMessage(target) });
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <View style={styles.screen}>
+      <TrackerDevice
+        sightings={visibleSightings}
+        latestSighting={latestSighting}
+        selectedId={selectedId}
+        activeProfile={profile}
+        terrain={terrain}
+        is3D={is3D}
+        centerRequest={centerRequest}
+        onSelect={setSelectedId}
+        onProfileChange={changeProfile}
+        onTerrain={() => setTerrain((current) => !current)}
+        onThreeD={() => setIs3D((current) => !current)}
+        onChat={() => setActiveModal('chat')}
+        onArchive={() => setActiveModal('archive')}
+        onCenter={() => setCenterRequest((request) => request + 1)}
+        onShare={() => void shareSighting()}
+      />
+      <ChatModal
+        visible={activeModal === 'chat'}
+        onClose={() => setActiveModal(null)}
+      />
+      <ArchiveModal
+        visible={activeModal === 'archive'}
+        onClose={() => setActiveModal(null)}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    backgroundColor: colors.black,
   },
 });
