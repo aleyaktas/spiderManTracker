@@ -44,7 +44,7 @@ export function TrackerMapOverlay({
         style={[styles.mapHeading, { top: topInset + 10 }]}
       >
         <View>
-          <Text style={styles.headingTitle}>VIGIL TRACKER</Text>
+          <Text style={styles.headingTitle}>SPIDER-MAN TRACKER</Text>
           <Text style={styles.headingText}>SECTOR Q-7</Text>
         </View>
         <View style={styles.liveBadge}>

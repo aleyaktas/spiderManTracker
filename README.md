@@ -1,12 +1,15 @@
-# Vigil Tracker
+# Spider-Man Tracker
 
-Vigil Tracker is a retro-styled, interactive neighborhood sighting map built
-with Expo and React Native. It demonstrates animated map markers, pan and pinch
-gestures, profile-based filtering, short audio announcements, modal panels, and
-native sharing in a single cross-platform codebase.
+Spider-Man Tracker is an unofficial, fan-made, retro-styled neighborhood
+sighting map built with Expo and React Native. It demonstrates animated map
+markers, pan and pinch gestures, profile-based filtering, short audio
+announcements, modal panels, and native sharing in a single cross-platform
+codebase.
 
-> This is a fictional, fan-made interface. It does not track real people or
-> locations and is not affiliated with or endorsed by Marvel or Sony.
+> **Unofficial fan project:** This fictional interface does not track real
+> people or locations and is not affiliated with or endorsed by Marvel, Sony,
+> or their affiliates. Spider-Man and related names and characters are
+> trademarks of their respective owners.
 
 ## Features
 
@@ -80,7 +83,7 @@ used by the application.
 
 ## License
 
-The source code is available under the [MIT License](LICENSE). Product names,
-characters, and third-party trademarks remain the property of their respective
-owners. Verify that you have distribution rights for any media assets you add
-to a fork.
+The source code is available under the [MIT License](LICENSE). This license
+applies to the repository's source code only; product names, characters, and
+third-party trademarks remain the property of their respective owners. Verify
+that you have distribution rights for any media assets you add to a fork.

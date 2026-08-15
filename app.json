@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Vigil Tracker",
-    "slug": "vigil-tracker",
+    "name": "Spider-Man Tracker",
+    "slug": "spiderman-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "vigiltracker",
+    "scheme": "spidermantracker",
     "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon"

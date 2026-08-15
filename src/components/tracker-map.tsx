@@ -21,10 +21,11 @@ import {
 } from '@/hooks/use-live-sighting';
 
 const MIN_SCALE = 1;
-const MAX_SCALE = 3.4;
-const CENTER_SCALE = 1.7;
-const MAP_WIDTH_FACTOR = 3.2;
-const MAP_HEIGHT_FACTOR = 1.55;
+const MAX_SCALE = 2.8;
+const CENTER_SCALE = 1.2;
+const MAP_WIDTH_FACTOR = 2.2;
+const MAP_HEIGHT_FACTOR = 1.35;
+const THREE_D_VERTICAL_SCALE = 0.92;
 
 type TrackerMapProps = {
   sightings: readonly Sighting[];
@@ -49,6 +50,11 @@ function panLimit(
 ) {
   'worklet';
   return Math.max(0, (contentDimension * currentScale - viewportDimension) * 0.5);
+}
+
+function verticalMapScale(threeDProgress: number) {
+  'worklet';
+  return 1 - (1 - THREE_D_VERTICAL_SCALE) * threeDProgress;
 }
 
 export function TrackerMap({
@@ -89,18 +95,20 @@ export function TrackerMap({
       }
 
       const nextScale = scale.get();
+      const verticalScale = verticalMapScale(threeDProgress.get());
       const limitX = panLimit(
         contentWidth.get(),
         viewportWidth.get(),
         nextScale,
       );
       const limitY = panLimit(
-        contentHeight.get(),
+        contentHeight.get() * verticalScale,
         viewportHeight.get(),
         nextScale,
       );
       const nextX = (0.5 - point.x) * contentWidth.get() * nextScale;
-      const nextY = (0.5 - point.y) * contentHeight.get() * nextScale;
+      const nextY =
+        (0.5 - point.y) * contentHeight.get() * nextScale * verticalScale;
 
       translateX.set(
         withTiming(clampOnUI(nextX, -limitX, limitX), { duration: 3_000 }),
@@ -114,6 +122,7 @@ export function TrackerMap({
       contentWidth,
       followLatest,
       scale,
+      threeDProgress,
       translateX,
       translateY,
       viewportHeight,
@@ -141,10 +150,16 @@ export function TrackerMap({
       return;
     }
 
+    const verticalScale = verticalMapScale(is3D ? 1 : 0);
     const limitX = panLimit(mapWidth, viewport.width, CENTER_SCALE);
-    const limitY = panLimit(mapHeight, viewport.height, CENTER_SCALE);
+    const limitY = panLimit(
+      mapHeight * verticalScale,
+      viewport.height,
+      CENTER_SCALE,
+    );
     const targetX = (0.5 - liveX.get()) * mapWidth * CENTER_SCALE;
-    const targetY = (0.5 - liveY.get()) * mapHeight * CENTER_SCALE;
+    const targetY =
+      (0.5 - liveY.get()) * mapHeight * CENTER_SCALE * verticalScale;
     followLatest.set(true);
     const centerAnimation = {
       duration: 520,
@@ -161,6 +176,7 @@ export function TrackerMap({
   }, [
     centerRequest,
     followLatest,
+    is3D,
     liveX,
     liveY,
     mapHeight,
@@ -177,8 +193,13 @@ export function TrackerMap({
     const nextMapWidth = width * MAP_WIDTH_FACTOR;
     const nextMapHeight = height * MAP_HEIGHT_FACTOR;
     const currentScale = scale.get();
+    const verticalScale = verticalMapScale(threeDProgress.get());
     const limitX = panLimit(nextMapWidth, width, currentScale);
-    const limitY = panLimit(nextMapHeight, height, currentScale);
+    const limitY = panLimit(
+      nextMapHeight * verticalScale,
+      height,
+      currentScale,
+    );
 
     setViewport({ width, height });
     viewportWidth.set(width);
@@ -194,7 +215,7 @@ export function TrackerMap({
     );
     translateY.set(
       clampOnUI(
-        (0.5 - liveY.get()) * nextMapHeight * currentScale,
+        (0.5 - liveY.get()) * nextMapHeight * currentScale * verticalScale,
         -limitY,
         limitY,
       ),
@@ -210,8 +231,13 @@ export function TrackerMap({
       followLatest.set(false);
     })
     .onUpdate((event) => {
+      const verticalScale = verticalMapScale(threeDProgress.get());
       const limitX = panLimit(contentWidth.get(), viewportWidth.get(), scale.get());
-      const limitY = panLimit(contentHeight.get(), viewportHeight.get(), scale.get());
+      const limitY = panLimit(
+        contentHeight.get() * verticalScale,
+        viewportHeight.get(),
+        scale.get(),
+      );
       translateX.set(
         clampOnUI(panStartX.get() + event.translationX, -limitX, limitX),
       );
@@ -236,12 +262,17 @@ export function TrackerMap({
         MAX_SCALE,
       );
       const ratio = nextScale / pinchStartScale.get();
+      const verticalScale = verticalMapScale(threeDProgress.get());
       const centeredFocalX = pinchFocalX.get() - viewportWidth.get() / 2;
       const centeredFocalY = pinchFocalY.get() - viewportHeight.get() / 2;
       const nextX = centeredFocalX - (centeredFocalX - pinchStartX.get()) * ratio;
       const nextY = centeredFocalY - (centeredFocalY - pinchStartY.get()) * ratio;
       const limitX = panLimit(contentWidth.get(), viewportWidth.get(), nextScale);
-      const limitY = panLimit(contentHeight.get(), viewportHeight.get(), nextScale);
+      const limitY = panLimit(
+        contentHeight.get() * verticalScale,
+        viewportHeight.get(),
+        nextScale,
+      );
 
       scale.set(nextScale);
       translateX.set(clampOnUI(nextX, -limitX, limitX));
@@ -261,8 +292,14 @@ export function TrackerMap({
     transform: [
       { perspective: 700 },
       { scale: scale.get() },
-      { rotateX: `${interpolate(threeDProgress.get(), [0, 1], [0, 18])}deg` },
-      { scaleY: interpolate(threeDProgress.get(), [0, 1], [1, 0.86]) },
+      { rotateX: `${interpolate(threeDProgress.get(), [0, 1], [0, 12])}deg` },
+      {
+        scaleY: interpolate(
+          threeDProgress.get(),
+          [0, 1],
+          [1, THREE_D_VERTICAL_SCALE],
+        ),
+      },
     ],
   }));
 
@@ -280,7 +317,7 @@ export function TrackerMap({
           <Reanimated.View style={[styles.panLayer, mapCanvasStyle, panStyle]}>
             <Reanimated.View style={[styles.transformLayer, mapTransformStyle]}>
               <Pressable
-                accessibilityLabel="Interactive city tracking map"
+                accessibilityLabel="Interactive Spider-Man tracking map"
                 accessibilityRole="button"
                 onPress={() => onSelect(null)}
                 style={styles.mapContent}>

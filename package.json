@@ -1,6 +1,6 @@
 {
   "name": "spiderman-tracker",
-  "description": "A retro, interactive neighborhood sighting tracker built with Expo and React Native.",
+  "description": "An unofficial, fan-made Spider-Man sighting tracker built with Expo and React Native.",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "license": "MIT",

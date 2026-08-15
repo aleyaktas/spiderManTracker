@@ -16,7 +16,7 @@ export function MapStreetLayer({ terrain, is3D }: MapStreetLayerProps) {
       width="100%"
       height="100%"
       viewBox="0 0 360 280"
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="none"
     >
       <Rect
         width="360"
