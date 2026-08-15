@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   mapRegion: { flex: 1 },
   controlsRegion: {
-    position: "absolute",
+    position: 'absolute',
     left: 10,
     right: 10,
   },

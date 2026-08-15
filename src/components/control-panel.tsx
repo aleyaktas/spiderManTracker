@@ -126,7 +126,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  identity: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  identity: {
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   heroIcon: {
     width: 30,
     height: 26,
@@ -174,7 +179,7 @@ const styles = StyleSheet.create({
   },
   signalText: { color: colors.teal, fontSize: 5, ...pixelFont },
   profileStrip: { flexDirection: 'row', gap: 4 },
-  profileButton: { flex: 1, minHeight: 24 },
+  profileButton: { flex: 1, minWidth: 0, minHeight: 24 },
   actionGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
-  actionButton: { width: '32%', flexGrow: 1, minHeight: 30 },
+  actionButton: { width: '32%', minWidth: 0, flexGrow: 1, minHeight: 30 },
 });

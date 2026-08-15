@@ -316,12 +316,16 @@ export function TrackerMap({
         <GestureDetector gesture={mapGesture}>
           <Reanimated.View style={[styles.panLayer, mapCanvasStyle, panStyle]}>
             <Reanimated.View style={[styles.transformLayer, mapTransformStyle]}>
-              <Pressable
-                accessibilityLabel="Interactive Spider-Man tracking map"
-                accessibilityRole="button"
-                onPress={() => onSelect(null)}
-                style={styles.mapContent}>
-                <MapStreetLayer terrain={terrain} is3D={is3D} />
+              <View style={styles.mapContent}>
+                <Pressable
+                  accessibilityLabel="Interactive Spider-Man tracking map"
+                  accessibilityRole="button"
+                  onPress={() => onSelect(null)}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+                  <MapStreetLayer terrain={terrain} is3D={is3D} />
+                </View>
                 {sightings.map((sighting) => {
                   const latest = sighting.id === latestSighting.id;
                   return (
@@ -338,7 +342,7 @@ export function TrackerMap({
                     />
                   );
                 })}
-              </Pressable>
+              </View>
             </Reanimated.View>
           </Reanimated.View>
         </GestureDetector>
